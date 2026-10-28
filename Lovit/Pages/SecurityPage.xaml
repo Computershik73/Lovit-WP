@@ -1,0 +1,74 @@
+<Page
+    x:Class="Lovit.Pages.SecurityPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="19,24,19,12">
+            <TextBlock Text="ЛОВИТ" Style="{StaticResource AppTitleStyle}" Margin="0" />
+            <TextBlock Text="пароль для входа"
+                       Style="{StaticResource PageTitleStyle}"
+                       TextWrapping="Wrap" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" Margin="19,0,19,19">
+            <StackPanel>
+                <TextBlock TextWrapping="Wrap" Opacity="0.7" Margin="0,0,0,16">
+                    MAX перестаёт слать код в SMS, когда у аккаунта уже есть сессия,
+                    и требует пароль. Поставить его можно только там, где вход уже
+                    выполнен, — то есть здесь.
+                </TextBlock>
+
+                <TextBlock x:Name="StateText" Text="Проверяем…" Margin="0,0,0,16" />
+
+                <PasswordBox x:Name="CurrentBox"
+                             Header="Текущий пароль"
+                             Visibility="Collapsed"
+                             Margin="0,0,0,8" />
+
+                <PasswordBox x:Name="PasswordBox"
+                             Header="Новый пароль"
+                             Margin="0,0,0,8" />
+
+                <PasswordBox x:Name="RepeatBox"
+                             Header="Ещё раз"
+                             Margin="0,0,0,8" />
+
+                <TextBox x:Name="HintBox"
+                         Header="Подсказка (не обязательно)"
+                         Margin="0,0,0,12" />
+
+                <Button x:Name="SaveButton"
+                        Content="установить пароль"
+                        HorizontalAlignment="Stretch"
+                        Click="OnSave" />
+
+                <Button x:Name="RemoveButton"
+                        Content="снять пароль"
+                        HorizontalAlignment="Stretch"
+                        Visibility="Collapsed"
+                        Margin="0,8,0,0"
+                        Click="OnRemove" />
+
+                <ProgressBar x:Name="Progress"
+                             IsIndeterminate="True"
+                             Visibility="Collapsed"
+                             Margin="0,12,0,0" />
+
+                <TextBlock x:Name="StatusText"
+                           TextWrapping="Wrap"
+                           Opacity="0.7"
+                           Margin="0,12,0,0" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

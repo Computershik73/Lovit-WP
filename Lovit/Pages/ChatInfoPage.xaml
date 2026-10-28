@@ -1,0 +1,102 @@
+<Page
+    x:Class="Lovit.Pages.ChatInfoPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="19,24,19,12">
+            <TextBlock Text="ЛОВИТ" Style="{StaticResource AppTitleStyle}" Margin="0" />
+            <TextBlock x:Name="TitleText"
+                       Text=""
+                       Style="{StaticResource PageTitleStyle}"
+                       TextWrapping="Wrap" />
+            <TextBlock x:Name="SubtitleText" Text="" Opacity="0.6" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" Margin="19,0,19,19">
+            <StackPanel>
+                <TextBlock x:Name="LinkText"
+                           Text=""
+                           Visibility="Collapsed"
+                           Opacity="0.7"
+                           Margin="0,0,0,8" />
+
+                <TextBlock x:Name="DescriptionText"
+                           Text=""
+                           Visibility="Collapsed"
+                           TextWrapping="Wrap"
+                           Margin="0,0,0,16" />
+
+                <ToggleSwitch x:Name="MuteSwitch"
+                              Header="Уведомления"
+                              OffContent="выключены"
+                              OnContent="включены"
+                              Toggled="OnMuteToggled" />
+
+                <Button x:Name="PinnedButton"
+                        Content="открепить сообщение"
+                        HorizontalAlignment="Stretch"
+                        Visibility="Collapsed"
+                        Margin="0,12,0,0"
+                        Click="OnUnpin" />
+
+                <Button Content="очистить историю"
+                        HorizontalAlignment="Stretch"
+                        Margin="0,8,0,0"
+                        Click="OnClear" />
+
+                <Button x:Name="LeaveButton"
+                        Content="выйти из чата"
+                        HorizontalAlignment="Stretch"
+                        Visibility="Collapsed"
+                        Margin="0,8,0,0"
+                        Click="OnLeave" />
+
+                <TextBlock x:Name="MembersHeader"
+                           Text="участники"
+                           Style="{StaticResource SectionHeaderStyle}"
+                           Visibility="Collapsed"
+                           Margin="0,28,0,8" />
+
+                <!--
+                    Участники внутри прокрутки страницы: свой ListView здесь
+                    дал бы вторую прокрутку внутри первой, а это на телефоне
+                    ловушка — палец не знает, какая из них поедет.
+                -->
+                <ItemsControl x:Name="MembersList">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0,0,0,14" Tapped="OnMemberTapped">
+                                <TextBlock Text="{Binding Title}"
+                                           Style="{StaticResource ListTitleStyle}" />
+                                <TextBlock Text="{Binding Preview}"
+                                           Style="{StaticResource ListSubtitleStyle}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <Button x:Name="MoreButton"
+                        Content="показать ещё"
+                        HorizontalAlignment="Stretch"
+                        Visibility="Collapsed"
+                        Margin="0,8,0,0"
+                        Click="OnMore" />
+
+                <ProgressBar x:Name="Progress"
+                             IsIndeterminate="True"
+                             Visibility="Collapsed"
+                             Margin="0,12,0,0" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

@@ -1,0 +1,66 @@
+<Page
+    x:Class="Lovit.Pages.PhotoPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="Black">
+
+    <!--
+        Чёрный фон, а не тема телефона: фотографию смотрят, а не читают, и
+        светлая рамка вокруг неё сбивает глаз. Так же поступает и оригинал.
+    -->
+    <Grid>
+        <!--
+            Снимки одного сообщения лежат страницами: пролистнуть к
+            соседнему можно, не возвращаясь в переписку. Когда снимок один,
+            страница тоже одна, и листать просто нечего.
+        -->
+        <FlipView x:Name="Pages"
+                  Background="Black"
+                  SelectionChanged="OnPageChanged">
+            <FlipView.ItemTemplate>
+                <DataTemplate>
+                    <ScrollViewer ZoomMode="Enabled"
+                                  MinZoomFactor="1"
+                                  MaxZoomFactor="4"
+                                  HorizontalScrollMode="Auto"
+                                  VerticalScrollMode="Auto"
+                                  HorizontalScrollBarVisibility="Hidden"
+                                  VerticalScrollBarVisibility="Hidden"
+                                  ZoomSnapPointsType="None"
+                                  SizeChanged="OnViewportChanged"
+                                  DoubleTapped="OnDoubleTapped"
+                                  IsDoubleTapEnabled="True">
+
+                        <!--
+                            Подложка размером ровно с окно, и картинка уже
+                            внутри неё. Без подложки Image меряется
+                            бесконечностью — прокрутка готова листать сколько
+                            угодно — и рисуется в натуральную величину своих
+                            точек: на экран влезал угол снимка, а щипок ничего
+                            не менял, потому что уменьшать ниже единицы некуда.
+                        -->
+                        <Grid Background="Transparent">
+                            <Image Source="{Binding Photo}" Stretch="Uniform" />
+                        </Grid>
+                    </ScrollViewer>
+                </DataTemplate>
+            </FlipView.ItemTemplate>
+        </FlipView>
+
+        <ProgressBar x:Name="Progress"
+                     VerticalAlignment="Top"
+                     IsIndeterminate="True"
+                     Visibility="Collapsed" />
+
+        <TextBlock x:Name="ErrorText"
+                   Text="Не удалось загрузить фотографию"
+                   Foreground="White"
+                   Opacity="0.7"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Visibility="Collapsed" />
+    </Grid>
+</Page>

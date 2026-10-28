@@ -1,0 +1,13 @@
+* text=auto
+
+*.cmd text eol=crlf
+*.sh  text eol=lf
+*.py  text eol=lf
+
+*.dll binary
+*.lib binary
+*.der binary
+*.pfx binary
+*.png binary
+*.jpg binary
+*.gif binary

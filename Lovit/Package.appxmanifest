@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
+  <Identity Name="ru.computershik.lovit" Publisher="CN=Computershik" Version="1.1.0.166" />
+  <mp:PhoneIdentity PhoneProductId="6e2c4b31-9c1d-4e36-9a2f-0b18d1c6a101" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Properties>
+    <DisplayName>Ловит</DisplayName>
+    <PublisherDisplayName>Computershik</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+  <Prerequisites>
+    <OSMinVersion>6.3.1</OSMinVersion>
+    <OSMaxVersionTested>6.3.1</OSMaxVersionTested>
+  </Prerequisites>
+  <Resources>
+    <Resource Language="ru-RU" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Lovit.App">
+      <!--
+        Плитки заданы по-разному не для красоты: на начальном экране Windows
+        Phone плитка бывает трёх размеров, и каждый берёт свой файл. Маленькая
+        (Square71x71) подписи не показывает вовсе, поэтому на ней один значок;
+        средняя и широкая подписываются, и на них имя приложения выводит
+        система — рисовать его в самой картинке нельзя, иначе получится
+        дважды.
+      -->
+      <m3:VisualElements DisplayName="Ловит" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="Неофициальный клиент мессенджера MAX" ForegroundText="light" BackgroundColor="#1B1B3A">
+        <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png" ShortName="Ловит">
+          <m3:ShowNameOnTiles>
+            <m3:ShowOn Tile="square150x150Logo" />
+            <m3:ShowOn Tile="wide310x150Logo" />
+          </m3:ShowNameOnTiles>
+        </m3:DefaultTile>
+        <m3:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#1B1B3A" />
+      </m3:VisualElements>
+      <!--
+        Ссылки вида max://max.ru/имя открываются нами: система отдаёт их
+        приложению, а оно спрашивает у сервера, что за ними стоит, и
+        открывает чат.
+      -->
+      <Extensions>
+        <Extension Category="windows.protocol">
+          <Protocol Name="max" />
+        </Extension>
+        <!--
+          Фоновое обновление плитки. Система заводит задачу по имени класса,
+          а по этой записи узнаёт, что такому классу дозволено просыпаться и
+          по каким поводам.
+
+          Поводов два: время — не чаще получаса, это её предел, — и появление
+          сети. Второй тем и хорош, что вышел из метро, и число на плитке
+          верное, не дожидаясь получаса.
+        -->
+        <Extension Category="windows.backgroundTasks" EntryPoint="Lovit.Background.TileTask">
+          <BackgroundTasks>
+            <Task Type="timer" />
+            <Task Type="systemEvent" />
+          </BackgroundTasks>
+        </Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <!-- Свой сокет до api2.oneme.ru. -->
+    <Capability Name="internetClientServer" />
+    <!--
+      Доступ к папкам телефона: без него свой выбор файла показывал бы пустой
+      список. Общего диска на Windows Phone нет, открыть можно только
+      библиотеки и карту памяти — что из этого разрешено на конкретном
+      телефоне, приложение выясняет само при открытии.
+    -->
+    <Capability Name="picturesLibrary" />
+    <Capability Name="musicLibrary" />
+    <Capability Name="videosLibrary" />
+    <Capability Name="removableStorage" />
+    <!--
+      Голосовые и кружки. Микрофон нужен обоим, камера — только кружку;
+      спрашиваются они у человека один раз, при первой записи.
+    -->
+    <DeviceCapability Name="microphone" />
+    <DeviceCapability Name="webcam" />
+  </Capabilities>
+</Package>

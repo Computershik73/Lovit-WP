@@ -1,0 +1,21 @@
+bin/
+obj/
+native/build/
+AppPackages/
+BundleArtifacts/
+*.user
+*.suo
+*.opendb
+.vs/
+
+# Закрытый ключ подписи: каждый делает свой (SETUP.md, шаг 1).
+*.pfx
+
+# Сводки к сборкам и журналы с телефонов — в них куски переписки.
+builds/
+*.log
+lovit-paket-*.bin
+
+# Рабочие заметки.
+CALLS-PLAN.md
+.claude/

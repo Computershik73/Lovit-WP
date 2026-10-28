@@ -1,0 +1,441 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Ловит для настольной Windows.
+
+  Своего кода здесь почти нет: исходники приложения подключены ссылками из
+  соседней папки и остаются нетронутыми — они собираются и для телефона, и
+  для стола. Своё тут только то, чего у стола и телефона не может быть
+  общего:
+
+    * App.xaml — набор системных кистей. Всё оформление держится на
+      телефонных PhoneAccentBrush и прочих, а на столе их нет вовсе;
+    * FilePicking.cs — выбор файла. На телефоне он уводит из приложения и
+      возвращает выбранное отдельной активацией, на столе это обычное окно;
+    * Shims\PhoneButtons.cs — железная кнопка «назад», которой на столе
+      нет: подставка, подающая то же событие от стрелки в заголовке окна.
+
+  Всё остальное — тот же самый код без единой правки под платформу.
+-->
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{4C8E1F73-92B6-4A05-8E77-1D3F5A9C6B22}</ProjectGuid>
+    <OutputType>AppContainerExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Lovit</RootNamespace>
+    <AssemblyName>Lovit</AssemblyName>
+    <DefaultLanguage>ru-RU</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <PackageCertificateKeyFile>..\Lovit\Lovit_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateThumbprint>3F1A38B70DAD5D8C470BA5F97ACD169F165CDCBC</PackageCertificateThumbprint>
+    <AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
+    <EnableSigningChecks>false</EnableSigningChecks>
+    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+    <AppxBundle>Never</AppxBundle>
+    <GenerateAppxPackageOnBuild>true</GenerateAppxPackageOnBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <!--
+      Само приложение подключено ссылкой, как и всё остальное: телефонную
+      кнопку «назад» ему подаёт подставка из Shims, а выбор файла — здешний.
+    -->
+    <Compile Include="..\Lovit\App.xaml.cs">
+      <Link>App.xaml.cs</Link>
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FilePicking.cs" />
+    <Compile Include="Shims\PhoneButtons.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\Logo.png" />
+    <Content Include="Assets\Logo.scale-200.png" />
+    <Content Include="Assets\SmallLogo.png" />
+    <Content Include="Assets\SmallLogo.scale-200.png" />
+    <Content Include="Assets\WideLogo.png" />
+    <Content Include="Assets\WideLogo.scale-200.png" />
+    <Content Include="Assets\Square71x71Logo.png" />
+    <Content Include="Assets\Square71x71Logo.scale-200.png" />
+    <Content Include="Assets\SplashScreen.png" />
+    <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Assets\StoreLogo.scale-200.png" />
+  </ItemGroup>
+  <!--
+    Родные библиотеки — те же самые, что на телефоне, только собранные
+    под настольную Windows: своя криптография вместо системной, разбор
+    WebP, кодирование голоса и движущиеся стикеры. Собираются скриптом
+    native\build-desktop.cmd.
+  -->
+  <ItemGroup Condition="'$(Platform)' == 'x86'">
+    <Content Include="..\Lovit\Native\x86-uwp\LovitTls.dll">
+      <Link>LovitTls.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Lovit\Native\x86-uwp\LovitWebP.dll">
+      <Link>LovitWebP.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Lovit\Native\x86-uwp\LovitOpus.dll">
+      <Link>LovitOpus.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <SDKReference Include="Microsoft.VCLibs, version=14.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.2.14</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Lovit\Backend\AccountModule.cs">
+      <Link>Backend\AccountModule.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Backend\ChatsModule.cs">
+      <Link>Backend\ChatsModule.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Backend\FoldersModule.cs">
+      <Link>Backend\FoldersModule.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Backend\MaxApi.cs">
+      <Link>Backend\MaxApi.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Backend\MessagesModule.cs">
+      <Link>Backend\MessagesModule.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Backend\SearchModule.cs">
+      <Link>Backend\SearchModule.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Backend\StickersModule.cs">
+      <Link>Backend\StickersModule.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Backend\TwoFactorModule.cs">
+      <Link>Backend\TwoFactorModule.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\Links.cs">
+      <Link>Core\Links.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\LiveTile.cs">
+      <Link>Core\LiveTile.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\TileAgent.cs">
+      <Link>Core\TileAgent.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\UnixTime.cs">
+      <Link>Core\UnixTime.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\Media\ImageCache.cs">
+      <Link>Core\Media\ImageCache.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\Media\LottieAnimation.cs">
+      <Link>Core\Media\LottieAnimation.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\Media\MediaHttp.cs">
+      <Link>Core\Media\MediaHttp.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\Media\MediaStore.cs">
+      <Link>Core\Media\MediaStore.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\Media\Mp4Facts.cs">
+      <Link>Core\Media\Mp4Facts.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\Media\OpusAudio.cs">
+      <Link>Core\Media\OpusAudio.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\Media\OpusRecording.cs">
+      <Link>Core\Media\OpusRecording.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\Media\RemoteStream.cs">
+      <Link>Core\Media\RemoteStream.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\Media\Uploader.cs">
+      <Link>Core\Media\Uploader.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\Media\VideoNoteRecorder.cs">
+      <Link>Core\Media\VideoNoteRecorder.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\Media\VoiceRecorder.cs">
+      <Link>Core\Media\VoiceRecorder.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\Media\WebPImage.cs">
+      <Link>Core\Media\WebPImage.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Core\Storage\ContactsCache.cs">
+      <Link>Core\Storage\ContactsCache.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Models\MaxAttachment.cs">
+      <Link>Models\MaxAttachment.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Models\MaxChat.cs">
+      <Link>Models\MaxChat.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Models\MaxContact.cs">
+      <Link>Models\MaxContact.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Models\MaxMessage.cs">
+      <Link>Models\MaxMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Models\MaxSticker.cs">
+      <Link>Models\MaxSticker.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Pages\AboutPage.xaml.cs">
+      <Link>Pages\AboutPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Pages\ChatInfoPage.xaml.cs">
+      <Link>Pages\ChatInfoPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Pages\ChatPage.xaml.cs">
+      <Link>Pages\ChatPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Pages\ChatPickerPage.xaml.cs">
+      <Link>Pages\ChatPickerPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Pages\ContactPage.xaml.cs">
+      <Link>Pages\ContactPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Pages\LogPage.xaml.cs">
+      <Link>Pages\LogPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Pages\LoginPage.xaml.cs">
+      <Link>Pages\LoginPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Pages\MainPage.xaml.cs">
+      <Link>Pages\MainPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Pages\PhotoPage.xaml.cs">
+      <Link>Pages\PhotoPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Pages\SearchPage.xaml.cs">
+      <Link>Pages\SearchPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Pages\SecurityPage.xaml.cs">
+      <Link>Pages\SecurityPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Pages\SettingsPage.xaml.cs">
+      <Link>Pages\SettingsPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Ui\FileBrowser.cs">
+      <Link>Ui\FileBrowser.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Ui\Formats.cs">
+      <Link>Ui\Formats.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Ui\IHandlesBack.cs">
+      <Link>Ui\IHandlesBack.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Ui\ListRows.cs">
+      <Link>Ui\ListRows.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Ui\RichText.cs">
+      <Link>Ui\RichText.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit\Ui\StickerPicker.cs">
+      <Link>Ui\StickerPicker.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit.Shared\Core\Log.cs">
+      <Link>Core\Log.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit.Shared\Core\Config\ClientVersion.cs">
+      <Link>Core\Config\ClientVersion.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit.Shared\Core\Config\DevicePresets.cs">
+      <Link>Core\Config\DevicePresets.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit.Shared\Core\Protocol\ChatCacheFingerprint.cs">
+      <Link>Core\Protocol\ChatCacheFingerprint.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit.Shared\Core\Protocol\Lz4.cs">
+      <Link>Core\Protocol\Lz4.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit.Shared\Core\Protocol\MessagePack.cs">
+      <Link>Core\Protocol\MessagePack.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit.Shared\Core\Protocol\Opcodes.cs">
+      <Link>Core\Protocol\Opcodes.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit.Shared\Core\Protocol\Packet.cs">
+      <Link>Core\Protocol\Packet.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit.Shared\Core\Protocol\Rescue.cs">
+      <Link>Core\Protocol\Rescue.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit.Shared\Core\Storage\AppSettings.cs">
+      <Link>Core\Storage\AppSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit.Shared\Core\Storage\DeviceIdentity.cs">
+      <Link>Core\Storage\DeviceIdentity.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit.Shared\Core\Transport\ITlsStream.cs">
+      <Link>Core\Transport\ITlsStream.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit.Shared\Core\Transport\MaxConnection.cs">
+      <Link>Core\Transport\MaxConnection.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit.Shared\Core\Transport\NativeTlsStream.cs">
+      <Link>Core\Transport\NativeTlsStream.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit.Shared\Core\Transport\SystemTlsStream.cs">
+      <Link>Core\Transport\SystemTlsStream.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="..\Lovit\Pages\AboutPage.xaml">
+      <Link>Pages\AboutPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Lovit\Pages\ChatInfoPage.xaml">
+      <Link>Pages\ChatInfoPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Lovit\Pages\ChatPage.xaml">
+      <Link>Pages\ChatPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Lovit\Pages\ChatPickerPage.xaml">
+      <Link>Pages\ChatPickerPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Lovit\Pages\ContactPage.xaml">
+      <Link>Pages\ContactPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Lovit\Pages\LogPage.xaml">
+      <Link>Pages\LogPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Lovit\Pages\LoginPage.xaml">
+      <Link>Pages\LoginPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Lovit\Pages\MainPage.xaml">
+      <Link>Pages\MainPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Lovit\Pages\PhotoPage.xaml">
+      <Link>Pages\PhotoPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Lovit\Pages\SearchPage.xaml">
+      <Link>Pages\SearchPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Lovit\Pages\SecurityPage.xaml">
+      <Link>Pages\SecurityPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Lovit\Pages\SettingsPage.xaml">
+      <Link>Pages\SettingsPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <!--
+    Последнее число версии растёт само на каждой сборке.
+
+    Иначе пакет с прежним номером Windows считает тем же самым и ставить
+    отказывается — «уже установлено», хотя внутри всё другое. Приходилось бы
+    каждый раз удалять прежний.
+
+    Шаг делается до проверки манифеста: номер должен смениться раньше, чем
+    его прочитает упаковщик. Обычная сборка без упаковки номер не трогает.
+  -->
+  <Target Name="BumpDesktopRevision" BeforeTargets="_ValidatePresenceOfAppxManifestItems">
+    <XmlPeek XmlInputPath="$(MSBuildProjectDirectory)\Package.appxmanifest"
+             Query="/*[local-name()='Package']/*[local-name()='Identity']/@Version">
+      <Output TaskParameter="Result" ItemName="_DesktopVersion" />
+    </XmlPeek>
+
+    <PropertyGroup>
+      <_Version>@(_DesktopVersion)</_Version>
+      <_NextRevision>$([MSBuild]::Add($([System.Version]::Parse($(_Version)).Revision), 1))</_NextRevision>
+      <_NextVersion>$([System.Version]::Parse($(_Version)).Major).$([System.Version]::Parse($(_Version)).Minor).$([System.Version]::Parse($(_Version)).Build).$(_NextRevision)</_NextVersion>
+    </PropertyGroup>
+
+    <XmlPoke XmlInputPath="$(MSBuildProjectDirectory)\Package.appxmanifest"
+             Query="/*[local-name()='Package']/*[local-name()='Identity']/@Version"
+             Value="$(_NextVersion)" />
+
+    <Message Importance="high" Text="Версия настольного пакета: $(_Version) -> $(_NextVersion)" />
+  </Target>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+</Project>

@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
+  <Identity Name="ru.computershik.lovit.desktop" Publisher="CN=Computershik" Version="1.1.0.2" />
+  <mp:PhoneIdentity PhoneProductId="8f3d5c22-71a4-4e5b-9c30-2d61ba7f4e10" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Properties>
+    <DisplayName>Ловит</DisplayName>
+    <PublisherDisplayName>Computershik</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.10586.0" MaxVersionTested="10.0.19041.0" />
+  </Dependencies>
+  <Resources>
+    <Resource Language="ru-RU" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Lovit.App">
+      <uap:VisualElements DisplayName="Ловит" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="Неофициальный клиент мессенджера MAX" BackgroundColor="#1B1B3A">
+        <uap:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png" ShortName="Ловит" />
+        <uap:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#1B1B3A" />
+      </uap:VisualElements>
+      <!--
+        Ссылки max://max.ru/имя открываются нами — так же, как на телефоне.
+      -->
+      <Extensions>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="max" />
+        </uap:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+  <!--
+    Порядок здесь не на глаз: схема манифеста требует сперва общие
+    возможности, потом уапешные, и только в самом конце — устройства.
+  -->
+  <Capabilities>
+    <!-- Свой сокет до api2.oneme.ru. -->
+    <Capability Name="internetClient" />
+    <Capability Name="internetClientServer" />
+    <!-- Отправка фотографий и сохранение непринятого. -->
+    <uap:Capability Name="picturesLibrary" />
+    <uap:Capability Name="videosLibrary" />
+    <!--
+      Голосовые и кружки: записываются с той же камеры и того же микрофона,
+      что и всё прочее. Разрешение спросит система при первой записи.
+    -->
+    <DeviceCapability Name="microphone" />
+    <DeviceCapability Name="webcam" />
+  </Capabilities>
+</Package>

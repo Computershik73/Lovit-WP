@@ -1,0 +1,46 @@
+<Page
+    x:Class="Lovit.Pages.LogPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="19,24,19,8">
+            <TextBlock Text="ЛОВИТ" Style="{StaticResource AppTitleStyle}" Margin="0" />
+            <TextBlock Text="журнал" Style="{StaticResource PageTitleStyle}" />
+        </StackPanel>
+
+        <!--
+            Поле ввода, а не просто текст: из него написанное можно выделить
+            и скопировать. Буфера обмена как такового в наборе Windows Phone
+            8.1 нет, и выделение в поле — единственный способ забрать отсюда
+            текст, не снимая журнал с телефона отдельным средством.
+        -->
+        <TextBox x:Name="Body"
+                 Grid.Row="1"
+                 Margin="12,0,12,12"
+                 Text=""
+                 IsReadOnly="True"
+                 AcceptsReturn="True"
+                 TextWrapping="Wrap"
+                 FontFamily="Courier New"
+                 FontSize="12"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto" />
+    </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Icon="Refresh" Label="обновить" Click="OnRefresh" />
+            <AppBarButton Icon="Save" Label="сохранить" Click="OnSave" />
+            <AppBarButton Icon="Delete" Label="очистить" Click="OnClear" />
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

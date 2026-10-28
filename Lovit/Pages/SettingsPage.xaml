@@ -1,0 +1,120 @@
+﻿<Page
+    x:Class="Lovit.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="19,24,19,12">
+            <TextBlock Text="ЛОВИТ" Style="{StaticResource AppTitleStyle}" Margin="0" />
+            <TextBlock Text="настройки"
+                       Style="{StaticResource PageTitleStyle}" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" Margin="19,0,19,19">
+            <StackPanel>
+
+                <!--
+                    ToggleSwitch системный, со своей подписью состояния:
+                    на Windows Phone переключатель сам говорит «вкл» и «выкл»,
+                    и подрисовывать к нему что-то своё значит спорить с системой.
+                -->
+                <ToggleSwitch x:Name="GhostSwitch"
+                              Header="Режим невидимки"
+                              OffContent="выкл"
+                              OnContent="вкл"
+                              Toggled="OnGhostToggled" />
+                <TextBlock Text="Собеседники не видят, что вы в сети."
+                           TextWrapping="Wrap"
+                           Opacity="0.6"
+                           FontSize="15"
+                           Margin="0,0,0,18" />
+
+                <ToggleSwitch x:Name="AntiReadSwitch"
+                              Header="Не отмечать прочитанным"
+                              OffContent="выкл"
+                              OnContent="вкл"
+                              Toggled="OnAntiReadToggled" />
+                <TextBlock Text="Отправитель не узнает, что сообщение открыто."
+                           TextWrapping="Wrap"
+                           Opacity="0.6"
+                           FontSize="15"
+                           Margin="0,0,0,18" />
+
+                <ToggleSwitch x:Name="TileAgentSwitch"
+                              Header="Обновлять плитку в фоне"
+                              OffContent="выкл"
+                              OnContent="вкл"
+                              Toggled="OnTileAgentToggled" />
+                <TextBlock Text="Число непрочитанных чатов на плитке обновляется, даже когда приложение закрыто. Система будит его не чаще раза в полчаса и тратит на это немного заряда."
+                           TextWrapping="Wrap"
+                           Opacity="0.6"
+                           FontSize="15"
+                           Margin="0,0,0,18" />
+
+                <ToggleSwitch x:Name="AntiTypingSwitch"
+                              Header="Не показывать набор текста"
+                              OffContent="выкл"
+                              OnContent="вкл"
+                              Toggled="OnAntiTypingToggled" />
+                <TextBlock Text="Собеседник не увидит «печатает…»."
+                           TextWrapping="Wrap"
+                           Opacity="0.6"
+                           FontSize="15"
+                           Margin="0,0,0,24" />
+
+                <!--
+                    Клиента MAX под Windows Phone нет, поэтому приложение
+                    представляется Android-телефоном. Каким именно — можно
+                    выбрать: это же имя сервер показывает в списке устройств
+                    аккаунта.
+                -->
+                <ComboBox x:Name="DeviceBox"
+                          Header="Устройство для сервера"
+                          SelectionChanged="OnDeviceChanged"
+                          Margin="0,0,0,4" />
+                <TextBlock Text="Меняется отпечаток сессии, но не сам аккаунт: заново входить не придётся."
+                           TextWrapping="Wrap"
+                           Opacity="0.6"
+                           FontSize="15"
+                           Margin="0,0,0,24" />
+
+                <Button Content="пароль для входа"
+                        HorizontalAlignment="Stretch"
+                        Click="OnSecurity" />
+
+                <!-- Журнал: без него разбирать обрывы связи нечем. -->
+                <Button Content="журнал"
+                        HorizontalAlignment="Stretch"
+                        Margin="0,8,0,0"
+                        Click="OnLog" />
+
+                <Button Content="о приложении"
+                        HorizontalAlignment="Stretch"
+                        Margin="0,8,0,0"
+                        Click="OnAbout" />
+
+                <Button x:Name="LogoutButton"
+                        Content="выйти из аккаунта"
+                        HorizontalAlignment="Stretch"
+                        Margin="0,8,0,0"
+                        Click="OnLogout" />
+
+                <TextBlock x:Name="TransportText"
+                           Text=""
+                           TextWrapping="Wrap"
+                           Opacity="0.6"
+                           FontSize="15"
+                           Margin="0,20,0,0" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

@@ -1,0 +1,70 @@
+<Page
+    x:Class="Lovit.Pages.ContactPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="19,24,19,12">
+            <TextBlock Text="ЛОВИТ" Style="{StaticResource AppTitleStyle}" Margin="0" />
+            <TextBlock x:Name="NameText"
+                       Text=""
+                       Style="{StaticResource PageTitleStyle}"
+                       TextWrapping="Wrap" />
+            <TextBlock x:Name="PresenceText" Text="" Opacity="0.6" />
+
+            <!--
+                Человек записан у нас в книжке. Признак этот не украшение:
+                от него же зависит, что делает кнопка ниже — добавляет или
+                убирает.
+            -->
+            <TextBlock x:Name="SavedText"
+                       Text="в контактах"
+                       Opacity="0.55"
+                       FontSize="15"
+                       Margin="0,2,0,0"
+                       Visibility="Collapsed" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" Margin="19,0,19,19">
+            <StackPanel>
+                <TextBlock x:Name="PhoneText" Text="" Opacity="0.7" Margin="0,0,0,8" />
+
+                <TextBlock x:Name="DescriptionText"
+                           Text=""
+                           Visibility="Collapsed"
+                           TextWrapping="Wrap"
+                           Margin="0,0,0,16" />
+
+                <Button Content="написать"
+                        HorizontalAlignment="Stretch"
+                        Click="OnWrite" />
+
+                <Button x:Name="ContactButton"
+                        Content="добавить в контакты"
+                        HorizontalAlignment="Stretch"
+                        Margin="0,8,0,0"
+                        Click="OnToggleContact" />
+
+                <Button x:Name="BlockButton"
+                        Content="заблокировать"
+                        HorizontalAlignment="Stretch"
+                        Margin="0,8,0,0"
+                        Click="OnToggleBlock" />
+
+                <ProgressBar x:Name="Progress"
+                             IsIndeterminate="True"
+                             Visibility="Collapsed"
+                             Margin="0,12,0,0" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

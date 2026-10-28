@@ -1,0 +1,98 @@
+<Page
+    x:Class="Lovit.Pages.SearchPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="19,24,19,8">
+            <TextBlock Text="ЛОВИТ" Style="{StaticResource AppTitleStyle}" Margin="0" />
+            <TextBlock Text="поиск"
+                       Style="{StaticResource PageTitleStyle}" />
+        </StackPanel>
+
+        <TextBox x:Name="QueryBox"
+                 Grid.Row="1"
+                 Margin="19,0,19,8"
+                 PlaceholderText="Имя, чат, сообщение"
+                 TextChanged="OnQueryChanged" />
+
+        <!--
+            Четыре раздела одним списком с заголовками: контакты и свои чаты
+            находятся мгновенно, по памяти, а сообщения и чужие каналы ждут
+            сервера — и появляются по мере ответов, не задерживая остальное.
+        -->
+        <ListView x:Name="Results"
+                  Grid.Row="2"
+                  Margin="0,0,0,0"
+                  SelectionMode="None"
+                  IsItemClickEnabled="True"
+                  ItemClick="OnResultClick">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Padding" Value="19,0,19,0" />
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Margin="0,0,0,14">
+                        <TextBlock Text="{Binding Header}"
+                                   Visibility="{Binding HeaderVisibility}"
+                                   Style="{StaticResource SectionHeaderStyle}"
+                                   Margin="0,12,0,8" />
+
+                        <!--
+                            Находка — такая же строка списка, с плиткой:
+                            без лица канал от канала не отличить, а в выдаче
+                            они идут вперемешку с чатами и людьми.
+                        -->
+                        <Grid Visibility="{Binding RowVisibility}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Grid.Column="0" Width="60" Height="60" Margin="0,0,12,0">
+                                <Border Background="{Binding AvatarBrush}"
+                                        Visibility="{Binding InitialsVisibility}">
+                                    <TextBlock Text="{Binding Initials}"
+                                               Foreground="White"
+                                               FontSize="24"
+                                               FontFamily="{ThemeResource PhoneFontFamilySemiLight}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" />
+                                </Border>
+                                <Image Source="{Binding Avatar}" Stretch="UniformToFill" />
+                            </Grid>
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                                <TextBlock Text="{Binding Title}"
+                                           Style="{StaticResource ListTitleStyle}" />
+                                <TextBlock Text="{Binding Preview}"
+                                           Style="{StaticResource ListSubtitleStyle}"
+                                           Visibility="{Binding PreviewVisibility}" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <ProgressBar x:Name="Progress"
+                     Grid.Row="2"
+                     VerticalAlignment="Top"
+                     IsIndeterminate="True"
+                     Visibility="Collapsed" />
+    </Grid>
+</Page>

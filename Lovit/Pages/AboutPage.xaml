@@ -1,0 +1,62 @@
+<Page
+    x:Class="Lovit.Pages.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="19,24,19,12">
+            <TextBlock Text="ЛОВИТ" Style="{StaticResource AppTitleStyle}" Margin="0" />
+            <TextBlock Text="о приложении"
+                       Style="{StaticResource PageTitleStyle}" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" Margin="19,0,19,19">
+            <StackPanel>
+                <TextBlock x:Name="VersionText" Text="" Opacity="0.7" Margin="0,0,0,16" />
+
+                <TextBlock TextWrapping="Wrap" Margin="0,0,0,16">
+                    «Ловит» — неофициальный клиент мессенджера MAX для Windows Phone 8.1.
+                    Приложение не связано с разработчиками мессенджера.
+                </TextBlock>
+
+                <TextBlock TextWrapping="Wrap" Margin="0,0,0,16">
+                    Вдохновлено приложением Komet.
+                </TextBlock>
+
+                <TextBlock TextWrapping="Wrap" Margin="0,0,0,16">
+                    Разработчик: Computershik
+                </TextBlock>
+
+                <TextBlock>
+                    <Hyperlink NavigateUri="https://t.me/cmplog">Telegram-канал разработчика</Hyperlink>
+                </TextBlock>
+                <TextBlock>
+                    <Hyperlink NavigateUri="https://4pda.to/forum/index.php?showuser=4458524">Профиль на 4PDA</Hyperlink>
+                </TextBlock>
+                <TextBlock>
+                    <Hyperlink NavigateUri="https://pay.cloudtips.ru/p/83821e32">Поддержать финансово</Hyperlink>
+                </TextBlock>
+
+                <TextBlock x:Name="TransportText"
+                           Text=""
+                           TextWrapping="Wrap"
+                           Opacity="0.7"
+                           Margin="0,0,0,16" />
+
+                <TextBlock x:Name="DeviceText"
+                           Text=""
+                           TextWrapping="Wrap"
+                           Opacity="0.7" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>
