@@ -35,6 +35,12 @@ namespace Lovit.Background
         /// <summary>Дольше этого ждать нельзя: у фоновой задачи считанные секунды.</summary>
         private static readonly TimeSpan Patience = TimeSpan.FromSeconds(12);
 
+        /// <summary>
+        /// Ответ на вход, если войти удалось. В нём и последние сообщения
+        /// чатов — по ним агент уведомляет о новом.
+        /// </summary>
+        public IDictionary<string, object> Login { get; private set; }
+
         public SlimClient()
         {
             _connection.PacketReceived += OnPacket;
@@ -66,6 +72,7 @@ namespace Lovit.Background
             Packet login = await LoginAsync(token);
             if (login == null || login.IsError) return -1;
 
+            Login = login.Map;
             return Count(login.Map);
         }
 

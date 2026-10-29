@@ -98,6 +98,17 @@ namespace Lovit.Pages
             if (!AccountModule.Instance.IsLoggedIn) await LoginAsync();
 
             await OpenPendingLinkAsync();
+            OpenPendingChat();
+        }
+
+        /// <summary>Открыть чат из уведомления, по которому нас запустили.</summary>
+        private void OpenPendingChat()
+        {
+            long chatId = App.PendingChatId;
+            if (chatId == 0) return;
+
+            App.PendingChatId = 0;
+            Frame.Navigate(typeof(ChatPage), new ChatPage.Target { ChatId = chatId });
         }
 
         /// <summary>

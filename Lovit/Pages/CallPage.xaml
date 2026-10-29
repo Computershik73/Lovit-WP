@@ -1,0 +1,101 @@
+<Page
+    x:Class="Lovit.Pages.CallPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="#FF15181D">
+
+    <!--
+        Экран разговора. Тот же тёмный фон, что у входящего: это продолжение
+        звонка, а не новая страница.
+    -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--
+            Звук собеседника. Играть его может только элемент, стоящий на
+            экране, — поэтому он здесь, невидимый.
+        -->
+        <MediaElement x:Name="Player" Width="0" Height="0" AutoPlay="True" />
+
+        <StackPanel Grid.Row="0" VerticalAlignment="Center" Margin="24,0">
+            <Grid Width="160" Height="160" HorizontalAlignment="Center">
+                <Ellipse Fill="#FF2B3440" />
+                <TextBlock x:Name="Initials"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="56"
+                           Foreground="White" />
+                <Ellipse x:Name="Avatar" Visibility="Collapsed">
+                    <Ellipse.Fill>
+                        <ImageBrush x:Name="AvatarBrush" Stretch="UniformToFill" />
+                    </Ellipse.Fill>
+                </Ellipse>
+            </Grid>
+
+            <TextBlock x:Name="PeerName"
+                       Margin="0,24,0,0"
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       FontSize="32"
+                       Foreground="White" />
+
+            <TextBlock x:Name="Status"
+                       Margin="0,6,0,0"
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       FontSize="18"
+                       Foreground="#FFA9B4C2" />
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="24,0,24,36">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="16" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <ToggleButton x:Name="MuteButton"
+                          Grid.Row="0"
+                          Grid.Column="0"
+                          Margin="0,0,0,8"
+                          HorizontalAlignment="Stretch"
+                          Content="без микрофона"
+                          Foreground="White"
+                          BorderBrush="#FF55606E"
+                          Click="OnMute" />
+
+            <ToggleButton x:Name="SpeakerButton"
+                          Grid.Row="0"
+                          Grid.Column="2"
+                          Margin="0,0,0,8"
+                          HorizontalAlignment="Stretch"
+                          Content="громкая связь"
+                          Foreground="White"
+                          BorderBrush="#FF55606E"
+                          Click="OnSpeaker" />
+
+            <Button x:Name="HangupButton"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    HorizontalAlignment="Stretch"
+                    Content="завершить"
+                    Foreground="White"
+                    Background="#FFD9362B"
+                    BorderBrush="#FFD9362B"
+                    Click="OnHangup" />
+        </Grid>
+    </Grid>
+</Page>

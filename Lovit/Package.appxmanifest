@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="ru.computershik.lovit" Publisher="CN=Computershik" Version="1.1.0.166" />
+  <Identity Name="ru.computershik.lovit" Publisher="CN=Computershik" Version="1.1.0.176" />
   <mp:PhoneIdentity PhoneProductId="6e2c4b31-9c1d-4e36-9a2f-0b18d1c6a101" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Ловит</DisplayName>
@@ -24,7 +24,7 @@
         система — рисовать его в самой картинке нельзя, иначе получится
         дважды.
       -->
-      <m3:VisualElements DisplayName="Ловит" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="Неофициальный клиент мессенджера MAX" ForegroundText="light" BackgroundColor="#1B1B3A">
+      <m3:VisualElements DisplayName="Ловит" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="Неофициальный клиент мессенджера MAX" ForegroundText="light" BackgroundColor="#1B1B3A" ToastCapable="true">
         <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png" ShortName="Ловит">
           <m3:ShowNameOnTiles>
             <m3:ShowOn Tile="square150x150Logo" />

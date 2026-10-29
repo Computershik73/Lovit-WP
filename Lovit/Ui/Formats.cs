@@ -23,6 +23,7 @@ namespace Lovit.Ui
         private string _title;
         private string _preview;
         private string _time;
+        private string _ticks;
         private int _unreadCount;
         private bool _dimmed;
 
@@ -57,6 +58,27 @@ namespace Lovit.Ui
         {
             get { return _time; }
             set { if (_time != value) { _time = value; Changed("Time"); } }
+        }
+
+        /// <summary>
+        /// Галочки перед временем, если последнее сообщение наше: «✓» —
+        /// дошло, «✓✓» — прочитано. Пусто — не наше или не к чему.
+        /// </summary>
+        public string Ticks
+        {
+            get { return _ticks; }
+            set
+            {
+                if (_ticks == value) return;
+                _ticks = value;
+                Changed("Ticks");
+                Changed("TicksVisibility");
+            }
+        }
+
+        public Visibility TicksVisibility
+        {
+            get { return string.IsNullOrEmpty(_ticks) ? Visibility.Collapsed : Visibility.Visible; }
         }
 
         public int UnreadCount
@@ -186,6 +208,8 @@ namespace Lovit.Ui
         private string _text;
         private string _time;
         private string _reactions;
+        private string _ticks;
+        private bool _read;
 
         public string MessageId { get; set; }
 
@@ -220,6 +244,45 @@ namespace Lovit.Ui
         public string Author { get; set; }
         public string DayLabel { get; set; }
         public bool IsOutgoing { get; set; }
+
+        /// <summary>Время сообщения по серверу — с ним сравнивается отметка о прочтении.</summary>
+        public long MessageTime { get; set; }
+
+        /// <summary>
+        /// Галочки у своего сообщения: «✓» — дошло до сервера, «✓✓» —
+        /// прочитано. У чужих и у дополнительных строк одного сообщения пусто.
+        /// </summary>
+        public string Ticks
+        {
+            get { return _ticks; }
+        }
+
+        public Visibility TicksVisibility
+        {
+            get { return string.IsNullOrEmpty(_ticks) ? Visibility.Collapsed : Visibility.Visible; }
+        }
+
+        /// <summary>
+        /// Прочитанное ярче доставленного. Цветом не отличить: свой пузырь и
+        /// так цвета выделения, и синяя галочка на нём пропала бы.
+        /// </summary>
+        public double TicksOpacity
+        {
+            get { return _read ? 1.0 : 0.6; }
+        }
+
+        /// <summary>Поставить галочки; зовётся и при сборке строки, и по отметке о прочтении.</summary>
+        public void ShowDelivery(bool shown, bool read)
+        {
+            string ticks = shown ? (read ? "✓✓" : "✓") : "";
+            if (ticks == _ticks && read == _read) return;
+
+            _ticks = ticks;
+            _read = read;
+            Notify("Ticks");
+            Notify("TicksVisibility");
+            Notify("TicksOpacity");
+        }
 
         /// <summary>Подпись над текстом: «Переслано от …» либо «Ответ на …».</summary>
         public string QuoteTitle { get; set; }

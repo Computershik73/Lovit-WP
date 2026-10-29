@@ -73,6 +73,18 @@ namespace Lovit.Backend
         /// <summary>Кто-то печатает: chatId и имя.</summary>
         public event Action<long, string> Typing;
 
+        /// <summary>
+        /// Кто-то, кроме нас, прочитал чат дальше прежнего — открытая
+        /// переписка перекрашивает галочки. Номер чата.
+        /// </summary>
+        public event Action<long> ReadMarkChanged;
+
+        /// <summary>
+        /// Чат, открытый сейчас на экране, или 0. Его ставит страница
+        /// переписки; по нему уведомления знают, о чём не напоминать.
+        /// </summary>
+        public long VisibleChatId { get; set; }
+
         private ChatsModule()
         {
             MaxApi.Instance.PushReceived += OnPush;
@@ -369,6 +381,21 @@ namespace Lovit.Backend
                 if (existing != null && chat.DontDisturbUntil == 0)
                 {
                     chat.DontDisturbUntil = existing.DontDisturbUntil;
+                }
+
+                // Отметки о прочтении — большая из двух по каждому: в чате
+                // сервер присылает то, что знал на свой момент, а NOTIF_MARK
+                // мог прийти раньше. Откатывать галочки назад нельзя.
+                if (existing != null)
+                {
+                    foreach (KeyValuePair<long, long> pair in existing.Participants)
+                    {
+                        long fresh;
+                        if (!chat.Participants.TryGetValue(pair.Key, out fresh) || fresh < pair.Value)
+                        {
+                            chat.Participants[pair.Key] = pair.Value;
+                        }
+                    }
                 }
 
                 _chats[chat.ChatId] = chat;
@@ -1381,17 +1408,60 @@ namespace Lovit.Backend
         }
 
         /// <summary>
-        /// Отметка о прочтении приходит и на свои сообщения — тогда сервер
-        /// сообщает, что счётчик непрочитанного пора обнулить: чат прочитали
-        /// с другого устройства.
+        /// До какого времени чат прочитан кем-то, кроме нас: наибольшая
+        /// отметка среди остальных участников, 0 — не читал никто. Своё
+        /// сообщение с временем не позже этого — прочитано; в группе, как у
+        /// Komet (_computeOtherReadTime), хватает одного читателя.
+        /// </summary>
+        public long ReadMarkOfOthers(long chatId)
+        {
+            MaxChat chat = Chat(chatId);
+            if (chat == null) return 0;
+
+            long best = 0;
+            foreach (KeyValuePair<long, long> pair in chat.Participants)
+            {
+                if (pair.Key != CurrentUserId && pair.Value > best) best = pair.Value;
+            }
+            return best;
+        }
+
+        /// <summary>
+        /// Отметка о прочтении. Чужая (`userId` — не мы) — это собеседник
+        /// прочитал наши сообщения: галочки. Своя — чат прочитали с другого
+        /// устройства, и счётчик непрочитанного пора обнулить.
+        ///
+        /// Раньше `userId` не смотрелся вовсе, и чтение собеседником обнуляло
+        /// и наш счётчик тоже.
         /// </summary>
         private void HandleMark(Packet packet)
         {
             long chatId = MessagePack.Long(packet.Map, "chatId");
-            string type = MessagePack.String(packet.Map, "type");
+            long userId = MessagePack.Long(packet.Map, "userId");
 
             MaxChat chat = Chat(chatId);
-            if (chat == null || type != "READ_MESSAGE") return;
+            if (chat == null) return;
+
+            if (userId != 0 && userId != CurrentUserId)
+            {
+                // «Пометить непрочитанным» — не чтение. Так у Komet
+                // (_handleNotifMark).
+                object unread;
+                if (packet.Map.TryGetValue("setAsUnread", out unread) && unread is bool && (bool)unread) return;
+
+                long mark = MessagePack.Long(packet.Map, "mark");
+                long known;
+                if (chat.Participants.TryGetValue(userId, out known) && known >= mark) return;
+                chat.Participants[userId] = mark;
+
+                Action<long> marked = ReadMarkChanged;
+                if (marked != null) MaxApi.RunOnUi(() => marked(chatId));
+                Notify();
+                return;
+            }
+
+            string type = MessagePack.String(packet.Map, "type");
+            if (type != "READ_MESSAGE") return;
 
             chat.UnreadCount = 0;
             Notify();

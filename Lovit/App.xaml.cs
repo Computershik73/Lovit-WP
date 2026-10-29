@@ -168,6 +168,12 @@ namespace Lovit
         public static string PendingLink { get; set; }
 
         /// <summary>
+        /// Чат из уведомления, по которому нас запустили, — откроется, когда
+        /// главная страница войдёт в аккаунт. Забирается и обнуляется так же.
+        /// </summary>
+        public static long PendingChatId { get; set; }
+
+        /// <summary>
         /// Окно с рамкой навигации. Заводится и при запуске, и при
         /// возвращении из выбора файла: если приложение успели выгрузить,
         /// возвращаться будет некуда.
@@ -216,6 +222,9 @@ namespace Lovit
                 Window.Current.Content = frame;
             }
 
+            // Нажали уведомление о сообщении — открыть его чат.
+            long toastChat = Toasts.ChatFromLaunch(e.Arguments);
+
             if (frame.Content == null)
             {
                 // Токен есть — сразу к чатам; вход показывается только тогда,
@@ -224,16 +233,29 @@ namespace Lovit
                     ? typeof(LoginPage)
                     : typeof(MainPage);
 
+                PendingChatId = toastChat;
                 frame.Navigate(start, e.Arguments);
+            }
+            else if (toastChat != 0 && !string.IsNullOrEmpty(AppSettings.Token))
+            {
+                // Приложение уже работало: чат открываем поверх того, что
+                // было на экране, — «назад» вернёт туда же.
+                frame.Navigate(typeof(ChatPage), new ChatPage.Target { ChatId = toastChat });
             }
 
             Window.Current.Activate();
+
+            // Поток окна — и при обычном запуске, а не только при повторной
+            // активации: без него MaxApi.RunOnUi из чужого потока выполнял
+            // работу прямо там же, и экран звонка падал с RPC_E_WRONG_THREAD.
+            MaxApi.RememberUi(Window.Current.Dispatcher);
 
             // Возвращение приложения на экран — повод проверить связь: пока
             // телефон спал, сокет успевал умереть молча, и со стороны клиента
             // соединение выглядело живым до первой отправки.
             Window.Current.VisibilityChanged += (sender, argument) =>
             {
+                Notifier.IsVisible = argument.Visible;
                 if (argument.Visible) MaxApi.Instance.WakeUp();
             };
 
@@ -242,6 +264,7 @@ namespace Lovit
                                            : "токен есть — сразу к чатам"));
 
             WireCalls();
+            Notifier.Start();
 
             var ignored = StartAsync();
 

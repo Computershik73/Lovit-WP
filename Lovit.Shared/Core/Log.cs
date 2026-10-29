@@ -104,6 +104,18 @@ namespace Lovit.Core
             Put(area, message);
         }
 
+        /// <summary>
+        /// Записать и сразу на диск. Для мест, после которых приложение может
+        /// упасть мимо обработчика падений — в родном коде или на чужом
+        /// потоке: обычная запись копится пачкой и ушла бы вместе с ним.
+        /// Ждёт записи — не для частых строк.
+        /// </summary>
+        public static void WriteNow(string area, string message)
+        {
+            Write(area, message);
+            if (Everything) Settle();
+        }
+
         /// <summary>Сама запись — уже без отбора.</summary>
         private static void Put(string area, string message)
         {

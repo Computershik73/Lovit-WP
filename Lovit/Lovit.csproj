@@ -164,11 +164,16 @@
     <Compile Include="Core\Storage\ContactsCache.cs" />
     <Compile Include="Core\LiveTile.cs" />
     <Compile Include="Core\TileAgent.cs" />
+    <Compile Include="Core\Notifier.cs" />
     <Compile Include="Ui\IHandlesBack.cs" />
     <Compile Include="Core\UnixTime.cs" />
     <Compile Include="Backend\Calls\CallParams.cs" />
     <Compile Include="Backend\Calls\CallSignaling.cs" />
     <Compile Include="Backend\Calls\CallsModule.cs" />
+    <Compile Include="Backend\Calls\CallAudio.cs" />
+    <Compile Include="Backend\Calls\CallCore.cs" />
+    <Compile Include="Backend\Calls\CallSession.cs" />
+    <Compile Include="Backend\Calls\Sdp.cs" />
     <Compile Include="Models\BrokenNames.cs" />
     <Compile Include="Models\MaxAttachment.cs" />
     <Compile Include="Models\MaxChat.cs" />
@@ -192,6 +197,9 @@
     </Compile>
     <Compile Include="Pages\IncomingCallPage.xaml.cs">
       <DependentUpon>IncomingCallPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CallPage.xaml.cs">
+      <DependentUpon>CallPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\LogPage.xaml.cs">
       <DependentUpon>LogPage.xaml</DependentUpon>
@@ -249,6 +257,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\IncomingCallPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\CallPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -111,6 +111,9 @@ namespace Lovit.Core.Protocol
         /// (см. Backend/Calls/CallParams).
         /// </summary>
         public const int NotifCallStart = 137;
+
+        /// <summary>Позвонить: создать разговор и позвать собеседника. Ответ — где сигнализация.</summary>
+        public const int VideoChatStartActive = 78;
         public const int NotifMsgDelete = 142;
         public const int NotifMsgReactions = 155;
         public const int NotifFolders = 277;

@@ -82,6 +82,7 @@
   <ItemGroup>
     <Compile Include="TileTask.cs" />
     <Compile Include="SlimClient.cs" />
+    <Compile Include="NewMessages.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

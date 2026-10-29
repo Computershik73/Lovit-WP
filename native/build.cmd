@@ -73,7 +73,8 @@ cl.exe /c /nologo /W3 /O2 /MD /GS ^
   /D_WIN32_WINNT=0x0603 /DWINAPI_FAMILY=WINAPI_FAMILY_PHONE_APP ^
   /D_CRT_SECURE_NO_WARNINGS /DUNICODE /D_UNICODE ^
   /I"%SSLDIR%\include" /I"%ROOT%\native\LovitTls" ^
-  "%ROOT%\native\LovitTls\lovit_tls.c"
+  "%ROOT%\native\LovitTls\lovit_tls.c" ^
+  "%ROOT%\native\LovitTls\lovit_call.c"
 if errorlevel 1 (popd & exit /b 1)
 
 rem kernel32 и ole32 в телефонном контейнере не существуют: то же самое
@@ -82,7 +83,7 @@ link.exe /nologo /DLL /APPCONTAINER /MACHINE:%MACHINE% /SUBSYSTEM:WINDOWS ^
   /DYNAMICBASE /NXCOMPAT /OPT:REF /OPT:ICF ^
   /NODEFAULTLIB:kernel32.lib /NODEFAULTLIB:ole32.lib ^
   /OUT:LovitTls.dll ^
-  lovit_tls.obj ssleay32.lib libeay32.lib ws2_32.lib ^
+  lovit_tls.obj lovit_call.obj ssleay32.lib libeay32.lib ws2_32.lib ^
   WindowsPhoneCore.lib RuntimeObject.lib PhoneAppModelHost.lib
 if errorlevel 1 (popd & exit /b 1)
 

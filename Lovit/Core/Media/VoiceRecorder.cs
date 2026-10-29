@@ -550,7 +550,7 @@ namespace Lovit.Core.Media
         /// довольно: слышимой разницы с честным пересчётом нет, а стоит он
         /// вдесятеро меньше.
         /// </summary>
-        private sealed class Resampler
+        internal sealed class Resampler
         {
             private double _at;
             private short _last;

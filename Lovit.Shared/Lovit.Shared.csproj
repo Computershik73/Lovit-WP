@@ -80,6 +80,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Core\Log.cs" />
+    <Compile Include="Core\Toasts.cs" />
     <Compile Include="Core\Config\ClientVersion.cs" />
     <Compile Include="Core\Config\DevicePresets.cs" />
     <Compile Include="Core\Protocol\ChatCacheFingerprint.cs" />

@@ -45,11 +45,27 @@ namespace Lovit.Ui
             row.Title = chats.Title(chat);
             row.Preview = Formats.OneLine(preview);
             row.Time = Formats.RelativeTime(chat.LastMessageTime);
+            row.Ticks = Ticks(chat);
             row.UnreadCount = chat.UnreadCount;
             row.Dimmed = chat.IsMuted;
 
             Fill(row, chats.AvatarUrl(chat));
             return row;
+        }
+
+        /// <summary>
+        /// Галочки у последнего сообщения, если оно наше. В «Избранном»
+        /// читать некому, в канале отметок не бывает.
+        /// </summary>
+        private static string Ticks(MaxChat chat)
+        {
+            ChatsModule chats = ChatsModule.Instance;
+            bool mine = chat.LastMessageId != 0 && chats.CurrentUserId != 0
+                        && chat.LastMessageSenderId == chats.CurrentUserId;
+            if (!mine || chat.ChatId == 0 || chat.IsChannel) return "";
+
+            long readMark = chats.ReadMarkOfOthers(chat.ChatId);
+            return readMark > 0 && chat.LastMessageTime <= readMark ? "✓✓" : "✓";
         }
 
         public static ListRow FromContact(MaxContact contact)

@@ -195,6 +195,12 @@ namespace Lovit.Pages
             ChatsModule.Instance.ReactionsChanged += OnReactionsChanged;
             ChatsModule.Instance.Changed += OnChatsChanged;
             ChatsModule.Instance.Typing += OnTyping;
+            ChatsModule.Instance.ReadMarkChanged += OnReadMarkChanged;
+
+            // Об этом чате уведомлять не надо: он и так перед глазами. Уже
+            // пришедшие о нём уведомления из центра уведомлений убираем.
+            ChatsModule.Instance.VisibleChatId = _chatId;
+            Notifier.Forget(_chatId);
 
             InputPane keyboard = InputPane.GetForCurrentView();
             keyboard.Showing += OnKeyboardShowing;
@@ -257,6 +263,9 @@ namespace Lovit.Pages
             ChatsModule.Instance.ReactionsChanged -= OnReactionsChanged;
             ChatsModule.Instance.Changed -= OnChatsChanged;
             ChatsModule.Instance.Typing -= OnTyping;
+            ChatsModule.Instance.ReadMarkChanged -= OnReadMarkChanged;
+
+            if (ChatsModule.Instance.VisibleChatId == _chatId) ChatsModule.Instance.VisibleChatId = 0;
 
             InputPane keyboard = InputPane.GetForCurrentView();
             keyboard.Showing -= OnKeyboardShowing;
@@ -410,6 +419,43 @@ namespace Lovit.Pages
             return null;
         }
 
+        /// <summary>
+        /// Кому звонить из этой переписки: собеседник диалога. В «Избранном»,
+        /// группах, каналах и с ботами — некому, тогда 0.
+        /// </summary>
+        private long CallTarget()
+        {
+            if (_chat == null || !_chat.IsDialog || _chat.IsBot || _chatId == 0) return 0;
+
+            long me = ChatsModule.Instance.CurrentUserId;
+            long other = _chat.OtherParticipant(me);
+            return other != 0 && other != me ? other : 0;
+        }
+
+        private async void OnCall(object sender, RoutedEventArgs e)
+        {
+            long target = CallTarget();
+            if (target == 0) return;
+
+            CallButton.IsEnabled = false;
+            try
+            {
+                Backend.Calls.CallSession session = await Backend.Calls.CallsModule.Instance.CallAsync(target);
+                if (session == null)
+                {
+                    var failed = new MessageDialog(Backend.Calls.CallsModule.Instance.LastError ?? "Не удалось позвонить.",
+                                                   "Звонок");
+                    await failed.ShowAsync();
+                    return;
+                }
+                Frame.Navigate(typeof(CallPage));
+            }
+            finally
+            {
+                CallButton.IsEnabled = true;
+            }
+        }
+
         private void OnInfo(object sender, RoutedEventArgs e)
         {
             if (_chat == null) return;
@@ -442,6 +488,8 @@ namespace Lovit.Pages
             SubtitleText.Visibility = string.IsNullOrEmpty(subtitle)
                 ? Visibility.Collapsed
                 : Visibility.Visible;
+
+            CallButton.Visibility = CallTarget() != 0 ? Visibility.Visible : Visibility.Collapsed;
 
             bool pinned = _chat != null && _chat.PinnedMessageId != 0;
             PinnedBar.Visibility = pinned ? Visibility.Visible : Visibility.Collapsed;
@@ -920,6 +968,32 @@ namespace Lovit.Pages
             Refresh(message);
         }
 
+        #region Отметки о прочтении
+
+        /// <summary>
+        /// Галочки своего сообщения: одна — дошло, две — прочитано. В
+        /// «Избранном» читать некому, в канале отметок не бывает.
+        /// </summary>
+        private void ShowDelivery(MessageRow row, long readMark)
+        {
+            bool shown = row.IsOutgoing && _chatId != 0 && (_chat == null || !_chat.IsChannel);
+            row.ShowDelivery(shown, readMark > 0 && row.MessageTime <= readMark);
+        }
+
+        /// <summary>Собеседник что-то прочитал — перекрашиваем галочки на месте.</summary>
+        private void OnReadMarkChanged(long chatId)
+        {
+            if (chatId != _chatId) return;
+
+            long readMark = ChatsModule.Instance.ReadMarkOfOthers(_chatId);
+            foreach (MessageRow row in _rows)
+            {
+                if (row.IsOutgoing && !string.IsNullOrEmpty(row.Ticks)) ShowDelivery(row, readMark);
+            }
+        }
+
+        #endregion
+
         private void OnTyping(long chatId, string name)
         {
             if (chatId != _chatId) return;
@@ -1018,8 +1092,10 @@ namespace Lovit.Pages
                 Author = AuthorName(message, outgoing),
                 DayLabel = day,
                 IsOutgoing = outgoing,
+                MessageTime = message.Time,
                 Reactions = ReactionLine(message)
             };
+            ShowDelivery(row, ChatsModule.Instance.ReadMarkOfOthers(_chatId));
 
             if (message.IsForwarded)
             {

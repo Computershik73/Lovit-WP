@@ -42,7 +42,9 @@ namespace Lovit.Core
             {
                 Forget();
 
-                if (!AppSettings.TileAgent)
+                // Агент нужен и плитке, и уведомлениям: он входит на сервер, и
+                // в ответе на вход есть и счётчики, и последние сообщения.
+                if (!AppSettings.TileAgent && !AppSettings.Notifications)
                 {
                     Log.Write("app", "фоновая плитка выключена");
                     return;

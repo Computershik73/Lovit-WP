@@ -12,8 +12,8 @@ using Windows.UI.Xaml.Navigation;
 namespace Lovit.Pages
 {
     /// <summary>
-    /// Экран входящего звонка: кто звонит, и две кнопки — отклонить или
-    /// скрыть. Ответить отсюда пока нельзя (см. CallsModule).
+    /// Экран входящего звонка: кто звонит, и три кнопки — ответить,
+    /// отклонить или скрыть. Ответ уводит на экран разговора (CallPage).
     ///
     /// Пока звонит — вибрация, раз в две секунды. Своей мелодии звонка у
     /// приложения нет, а системную обычному приложению Windows Phone 8.1
@@ -48,6 +48,7 @@ namespace Lovit.Pages
             ChatsModule.Instance.Changed += OnContactsChanged;
 
             Kind.Text = _call.IsVideo ? "входящий видеозвонок" : "входящий звонок";
+            VideoNote.Visibility = _call.IsVideo ? Visibility.Visible : Visibility.Collapsed;
             ShowCaller();
             StartBuzz();
         }
@@ -144,8 +145,33 @@ namespace Lovit.Pages
 
         #region Кнопки
 
+        /// <summary>
+        /// Ответить. Сам звонок живёт в CallsModule, а экран разговора лишь
+        /// показывает его: уход с экрана звонок не обрывает.
+        /// </summary>
+        private void OnAnswer(object sender, RoutedEventArgs e)
+        {
+            AnswerButton.IsEnabled = false;
+            DeclineButton.IsEnabled = false;
+            HideButton.IsEnabled = false;
+            StopBuzz();
+
+            // Этот экран больше не нужен, но уйти он должен на разговор, а не
+            // «назад», — отписываемся до того, как звонок перестанет звонить.
+            CallsModule.Instance.IncomingEnded -= OnEnded;
+
+            if (CallsModule.Instance.Answer() == null)
+            {
+                Leave();
+                return;
+            }
+
+            Frame.Navigate(typeof(CallPage));
+        }
+
         private async void OnDecline(object sender, RoutedEventArgs e)
         {
+            AnswerButton.IsEnabled = false;
             DeclineButton.IsEnabled = false;
             HideButton.IsEnabled = false;
             StopBuzz();

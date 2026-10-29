@@ -32,6 +32,10 @@ namespace Lovit.Pages
             AntiReadSwitch.IsOn = AppSettings.AntiRead;
             AntiTypingSwitch.IsOn = AppSettings.AntiTyping;
             TileAgentSwitch.IsOn = AppSettings.TileAgent;
+            NotificationsSwitch.IsOn = AppSettings.Notifications;
+            NotificationSoundSwitch.IsOn = AppSettings.NotificationSound;
+            NotificationTextSwitch.IsOn = AppSettings.NotificationText;
+            ShowNotificationDetails();
 
             var names = new List<string>();
             foreach (DevicePreset preset in DevicePresets.All) names.Add(preset.DeviceName);
@@ -66,6 +70,39 @@ namespace Lovit.Pages
 
             AppSettings.TileAgent = TileAgentSwitch.IsOn;
             await TileAgent.ApplyAsync();
+        }
+
+        /// <summary>
+        /// Уведомления. Фоновый агент нужен и им, поэтому заводится заново:
+        /// плитка может быть выключена, а уведомления — нет.
+        /// </summary>
+        private async void OnNotificationsToggled(object sender, RoutedEventArgs e)
+        {
+            if (_loading) return;
+
+            AppSettings.Notifications = NotificationsSwitch.IsOn;
+            ShowNotificationDetails();
+            await TileAgent.ApplyAsync();
+        }
+
+        private void OnNotificationSoundToggled(object sender, RoutedEventArgs e)
+        {
+            if (_loading) return;
+            AppSettings.NotificationSound = NotificationSoundSwitch.IsOn;
+        }
+
+        private void OnNotificationTextToggled(object sender, RoutedEventArgs e)
+        {
+            if (_loading) return;
+            AppSettings.NotificationText = NotificationTextSwitch.IsOn;
+        }
+
+        /// <summary>Звук и текст без самих уведомлений ничего не значат — прячем.</summary>
+        private void ShowNotificationDetails()
+        {
+            NotificationDetails.Visibility = AppSettings.Notifications
+                ? Visibility.Visible
+                : Visibility.Collapsed;
         }
 
         private void OnAntiTypingToggled(object sender, RoutedEventArgs e)

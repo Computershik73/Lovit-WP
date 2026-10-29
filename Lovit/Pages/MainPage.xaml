@@ -70,10 +70,19 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="2" Margin="10,6,0,0" VerticalAlignment="Top">
-                    <TextBlock Text="{Binding Time}"
-                               FontSize="14"
-                               Opacity="0.55"
-                               HorizontalAlignment="Right" />
+                    <!-- Галочки своего последнего сообщения — перед временем. -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding Ticks}"
+                                   Visibility="{Binding TicksVisibility}"
+                                   FontFamily="Segoe UI Symbol"
+                                   FontSize="14"
+                                   CharacterSpacing="-400"
+                                   Foreground="{ThemeResource PhoneAccentBrush}"
+                                   Margin="0,0,6,0" />
+                        <TextBlock Text="{Binding Time}"
+                                   FontSize="14"
+                                   Opacity="0.55" />
+                    </StackPanel>
                     <!-- Счётчик — квадрат цветом системы, без скруглений. -->
                     <Border Background="{ThemeResource PhoneAccentBrush}"
                             MinWidth="26"

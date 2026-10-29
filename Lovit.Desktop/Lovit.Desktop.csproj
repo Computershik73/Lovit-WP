@@ -187,6 +187,9 @@
     <Compile Include="..\Lovit\Core\TileAgent.cs">
       <Link>Core\TileAgent.cs</Link>
     </Compile>
+    <Compile Include="..\Lovit\Core\Notifier.cs">
+      <Link>Core\Notifier.cs</Link>
+    </Compile>
     <Compile Include="..\Lovit\Core\UnixTime.cs">
       <Link>Core\UnixTime.cs</Link>
     </Compile>
@@ -297,6 +300,9 @@
     </Compile>
     <Compile Include="..\Lovit\Ui\StickerPicker.cs">
       <Link>Ui\StickerPicker.cs</Link>
+    </Compile>
+    <Compile Include="..\Lovit.Shared\Core\Toasts.cs">
+      <Link>Core\Toasts.cs</Link>
     </Compile>
     <Compile Include="..\Lovit.Shared\Core\Log.cs">
       <Link>Core\Log.cs</Link>

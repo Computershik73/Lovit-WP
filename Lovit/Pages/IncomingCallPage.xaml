@@ -49,25 +49,44 @@
         </StackPanel>
 
         <!--
-            Честно, что ответить отсюда нельзя: иначе человек будет искать
-            кнопку «ответить», которой нет.
+            Видео Ловит пока не умеет: на видеозвонок отвечаем голосом, и об
+            этом лучше сказать заранее.
         -->
-        <TextBlock Grid.Row="1"
+        <TextBlock x:Name="VideoNote"
+                   Grid.Row="1"
                    Margin="24,0,24,24"
                    TextAlignment="Center"
                    TextWrapping="Wrap"
                    FontSize="15"
                    Foreground="#FFA9B4C2"
-                   Text="Отвечать на звонки Ловит пока не умеет. Ответьте с другого устройства или отклоните." />
+                   Visibility="Collapsed"
+                   Text="Видео Ловит пока не показывает — ответить можно голосом." />
 
         <Grid Grid.Row="2" Margin="24,0,24,36">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="16" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
+            <Button x:Name="AnswerButton"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    Margin="0,0,0,8"
+                    HorizontalAlignment="Stretch"
+                    Content="ответить"
+                    Foreground="White"
+                    Background="#FF2E9E4F"
+                    BorderBrush="#FF2E9E4F"
+                    Click="OnAnswer" />
+
             <Button x:Name="HideButton"
+                    Grid.Row="1"
                     Grid.Column="0"
                     HorizontalAlignment="Stretch"
                     Content="скрыть"
@@ -76,6 +95,7 @@
                     Click="OnHide" />
 
             <Button x:Name="DeclineButton"
+                    Grid.Row="1"
                     Grid.Column="2"
                     HorizontalAlignment="Stretch"
                     Content="отклонить"

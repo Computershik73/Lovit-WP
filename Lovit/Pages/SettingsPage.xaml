@@ -49,6 +49,36 @@
                            FontSize="15"
                            Margin="0,0,0,18" />
 
+                <ToggleSwitch x:Name="NotificationsSwitch"
+                              Header="Уведомления о сообщениях"
+                              OffContent="выкл"
+                              OnContent="вкл"
+                              Toggled="OnNotificationsToggled" />
+                <TextBlock Text="Пока приложение открыто — сразу. Пока закрыто — когда система разбудит его в фоне, не чаще раза в полчаса: своих пушей у неофициального клиента нет. Чаты без звука и каналы молчат."
+                           TextWrapping="Wrap"
+                           Opacity="0.6"
+                           FontSize="15"
+                           Margin="0,0,0,18" />
+
+                <StackPanel x:Name="NotificationDetails">
+                    <ToggleSwitch x:Name="NotificationSoundSwitch"
+                                  Header="Звук уведомления"
+                                  OffContent="выкл"
+                                  OnContent="вкл"
+                                  Toggled="OnNotificationSoundToggled" />
+
+                    <ToggleSwitch x:Name="NotificationTextSwitch"
+                                  Header="Текст сообщения в уведомлении"
+                                  OffContent="выкл"
+                                  OnContent="вкл"
+                                  Toggled="OnNotificationTextToggled" />
+                    <TextBlock Text="Выключено — только «Новое сообщение»: уведомление видно и на заблокированном экране."
+                               TextWrapping="Wrap"
+                               Opacity="0.6"
+                               FontSize="15"
+                               Margin="0,0,0,18" />
+                </StackPanel>
+
                 <ToggleSwitch x:Name="TileAgentSwitch"
                               Header="Обновлять плитку в фоне"
                               OffContent="выкл"

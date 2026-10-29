@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Lovit.Core.Storage;
 using Windows.ApplicationModel.Background;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
@@ -7,7 +9,8 @@ using Lovit.Core;
 namespace Lovit.Background
 {
     /// <summary>
-    /// Фоновое обновление плитки: раз в получас и при появлении сети.
+    /// Фоновое обновление плитки: раз в получас и при появлении сети. Заодно
+    /// — уведомления о сообщениях, пришедших с прошлого раза (NewMessages).
     ///
     /// Систему просят завести эту задачу по имени класса, и заводит она её
     /// сама — приложение в это время не работает вовсе. Отсюда все
@@ -36,11 +39,19 @@ namespace Lovit.Background
             try
             {
                 int count;
+                IDictionary<string, object> login;
 
                 using (var client = new SlimClient())
                 {
                     count = await client.CountUnreadAsync();
+                    login = client.Login;
                 }
+
+                if (login != null && AppSettings.Notifications) await NewMessages.PostAsync(login);
+
+                // Агент мог быть заведён только ради уведомлений — тогда
+                // плитку, раз о ней не просили, не трогаем.
+                if (!AppSettings.TileAgent) count = -2;
 
                 // Меньше нуля — не дозвонились. Плитку тогда не трогаем:
                 // прежнее число ближе к правде, чем ноль от неудачи.
@@ -49,7 +60,7 @@ namespace Lovit.Background
                     Show(count);
                     Log.Write("app", "плитка в фоне: непрочитанных чатов " + count);
                 }
-                else
+                else if (count == -1)
                 {
                     Log.Write("app", "плитка в фоне: до сервера не дошли");
                 }
